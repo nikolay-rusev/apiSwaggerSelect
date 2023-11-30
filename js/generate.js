@@ -1,43 +1,22 @@
+const apiPaths = {
+  all: "/api/v1",
+  8044: "/api/auth/v1", // userMngmnt
+};
+const swaggerPath = "/swagger-ui/index.html";
 function generate() {
-  let separator = document.getElementById("separator").value || ",";
-  let idSeparator = document.getElementById("idSeparator").value || ";";
-  let content = document.getElementById("content").value;
-  let output = document.getElementById("output");
-  let classifier = document.getElementById("classifier").value || "classifier";
-  let value = document.getElementById("value").value || "value";
-  let label = document.getElementById("label").value || "label";
-  let list = content.split(separator);
-  let entities = [];
-  for (let i = 0; i < list.length; i++) {
-    let el = list[i].trim();
-    if (el.indexOf(idSeparator) > -1) {
-      let [id, label, _] = el.split(idSeparator);
-      entities.push(`{
-                    "properties": {
-                        "id": "${id}",
-                        "label": "${label}"
-                    }
-                 }`);
-    } else {
-      entities.push(`{
-                    "properties": {
-                        "id": "${i}",
-                        "label": "${el}"
-                    }
-                 }`);
-    }
+  let baseURL = document.getElementById("baseURL").value;
+  let ipSuffix = document.getElementById("ipSuffix").value;
+  let ports = document.getElementById("ports").value;
+  let apiPathOutElement = document.getElementById("apiPathOut");
+  let swaggerPathOutElement = document.getElementById("swaggerPathOut");
+
+  let apiPathOut = baseURL + ipSuffix + ":" + ports + apiPaths["all"];
+  if (ports === "8044") {
+    apiPathOut = baseURL + ipSuffix + ":" + ports + apiPaths["8044"];
   }
-  output.value = `{
-              "class": ["${classifier}"],
-              "properties": {
-                  "label": "${label}",
-                  "value": ["${value}"]
-              },
-              "entities": [
-                  {
-                      "class": ["enum"],
-                      "entities": [${entities.join(",")}]
-                  }
-              ]
-          }`;
+  const swaggerPathOut = baseURL + ipSuffix + ":" + ports + swaggerPath;
+  apiPathOutElement.href = apiPathOut;
+  swaggerPathOutElement.href = swaggerPathOut;
+  apiPathOutElement.text = apiPathOut;
+  swaggerPathOutElement.text = swaggerPathOut;
 }
